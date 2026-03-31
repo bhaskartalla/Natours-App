@@ -1,9 +1,31 @@
 import type { Request, Response, NextFunction } from 'express'
 import Tour from '../models/tourModel'
+import type { Query } from 'mongoose'
+import APIFeatures from '../utils/apiFeatures'
+
+export const aliasTopTours = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  ;(req as any).aliasQuery = {
+    limit: '5',
+    sort: '-ratingsAverage,price',
+    fields: 'name,price,ratingsAverage,summary,difficulty',
+  }
+
+  next()
+}
 
 export const getAllTours = async (req: Request, res: Response) => {
   try {
-    const tours = await Tour.find()
+    const features = new APIFeatures(Tour.find(), req)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate()
+
+    const tours = await features.query
 
     res.status(200).json({
       status: 'success',
