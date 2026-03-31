@@ -1,26 +1,27 @@
 import type { Request, Response, NextFunction } from 'express'
 import fs from 'fs'
+import Tour from '../models/tourModel'
 
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`, 'utf-8'),
 )
 
-export const checkID = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-  val: string,
-) => {
-  console.log(`Tour id is: ${val}`)
+// export const checkID = (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction,
+//   val: string,
+// ) => {
+//   console.log(`Tour id is: ${val}`)
 
-  if (Number(req.params.id) > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    })
-  }
-  next()
-}
+//   if (Number(req.params.id) > tours.length) {
+//     return res.status(404).json({
+//       status: 'fail',
+//       message: 'Invalid ID',
+//     })
+//   }
+//   next()
+// }
 
 export const checkBody = (req: Request, res: Response, next: NextFunction) => {
   if (!req.body.name || !req.body.price) {

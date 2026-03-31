@@ -1,6 +1,5 @@
 import express from 'express'
 import {
-  checkID,
   getAllTours,
   checkBody,
   createTour,
@@ -11,7 +10,7 @@ import {
 
 const router = express.Router()
 
-router.param('id', checkID)
+// router.param('id', checkID)
 
 router.route('/').get(getAllTours).post(checkBody, createTour)
 
