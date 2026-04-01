@@ -4,10 +4,11 @@ import morgan from 'morgan'
 
 import { router as tourRouter } from './routes/tourRoutes'
 import { router as userRouter } from './routes/userRoutes'
+import AppError from './utils/appError'
+import { globalErrorHandler } from './controllers/errorController'
 
 const app = express()
 
-// 1) MIDDLEWARES
 // if (process.env.NODE_ENV === 'development') {
 app.use(morgan('dev'))
 // }
@@ -23,5 +24,11 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 // 3) ROUTES
 app.use('/api/v1/tours', tourRouter)
 app.use('/api/v1/users', userRouter)
+
+app.all('*splat', (req: Request, res: Response, next: NextFunction) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server`, 404))
+})
+
+app.use(globalErrorHandler)
 
 export default app
