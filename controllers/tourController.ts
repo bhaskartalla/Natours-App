@@ -1,6 +1,5 @@
 import type { Request, Response, NextFunction } from 'express'
 import Tour from '../models/tourModel'
-import type { Query } from 'mongoose'
 import APIFeatures from '../utils/apiFeatures'
 
 export const aliasTopTours = (
