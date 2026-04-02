@@ -1,12 +1,7 @@
-import mongoose, {
-  type CallbackWithoutResultAndOptionalError,
-  Document,
-  type HydratedDocument,
-  Query,
-} from 'mongoose'
+import mongoose, { Query, Document, Aggregate } from 'mongoose'
 import slugify from 'slugify'
 
-export interface ITour {
+interface ITour extends Document {
   name: string
   slug: string
   duration: number
@@ -22,9 +17,10 @@ export interface ITour {
   images: string[]
   createdAt: Date
   startDates: Date[]
+  secretTour: boolean
 }
 
-const tourSchema = new mongoose.Schema(
+const tourSchema = new mongoose.Schema<ITour>(
   {
     name: {
       type: String,
@@ -66,7 +62,7 @@ const tourSchema = new mongoose.Schema(
     priceDiscount: {
       type: Number,
       validate: {
-        validator: function (val: number) {
+        validator: function (this: ITour, val: number) {
           return val < this.price
         },
         message: 'Discount price ({VALUE}) should be below regular price',
@@ -89,7 +85,7 @@ const tourSchema = new mongoose.Schema(
     images: {
       type: [String],
     },
-    createAt: {
+    createdAt: {
       type: Date,
       default: Date.now(),
       select: false,
@@ -120,16 +116,11 @@ tourSchema.pre('save', async function () {
 })
 
 tourSchema.pre(/^find/, async function (this: Query<any, any>) {
-  // this.start = Date.now()
   this.find({ secretTour: { $ne: true } })
 })
 
-// tourSchema.post(/^find/, function (docs) {
-//   console.log(`Query took ${Date.now() - this.start} milliseconds!`)
-// })
-
-tourSchema.pre('aggregate', function () {
+tourSchema.pre('aggregate', function (this: Aggregate<any>) {
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } })
 })
 
-export default mongoose.model('Tour', tourSchema)
+export default mongoose.model<ITour>('Tour', tourSchema)
