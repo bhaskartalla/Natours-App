@@ -7,11 +7,13 @@ import {
   updateUser,
   deleteUser,
 } from './../controllers/userController'
-import { signUp } from '../controllers/authController'
+import { login, signUp } from '../controllers/authController'
 
 const router = express.Router()
 
 router.route('/signup').post(signUp)
+
+router.route('/login').post(login)
 
 router.route('/').get(getAllUsers).post(createUser)
 

@@ -1,6 +1,6 @@
 import mongoose, { Query, Document, Aggregate } from 'mongoose'
 import validator from 'validator'
-import bcryptjs from 'bcryptjs'
+import bcrypt from 'bcryptjs'
 
 interface IUser extends Document {
   name: string
@@ -8,6 +8,10 @@ interface IUser extends Document {
   photo: string
   password: string
   passwordConfirm: string | undefined
+  correctPassword(
+    candidatePassword: string,
+    userPassword: string,
+  ): Promise<boolean>
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -29,6 +33,7 @@ const userSchema = new mongoose.Schema<IUser>({
     type: String,
     required: [true, 'Please provide password'],
     minLength: 8,
+    select: false,
   },
   passwordConfirm: {
     type: String,
@@ -44,8 +49,15 @@ const userSchema = new mongoose.Schema<IUser>({
 
 userSchema.pre('save', async function () {
   if (!this.isModified('password')) return
-  this.password = await bcryptjs.hash(this.password, 12)
+  this.password = await bcrypt.hash(this.password, 12)
   this.passwordConfirm = undefined
 })
+
+userSchema.methods.correctPassword = async function (
+  candidatePassword: string,
+  userPassword: string,
+): Promise<boolean> {
+  return await bcrypt.compare(candidatePassword, userPassword)
+}
 
 export default mongoose.model('User', userSchema)
