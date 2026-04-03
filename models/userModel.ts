@@ -9,6 +9,7 @@ export interface IUser extends Document {
   password: string
   passwordConfirm: string | undefined
   passwordChangedAt: Date
+  role: 'admin' | 'lead-guide' | 'guide' | 'user'
   correctPassword(
     candidatePassword: string,
     userPassword: string,
@@ -49,6 +50,11 @@ const userSchema = new mongoose.Schema<IUser>({
   },
   passwordChangedAt: {
     type: Date,
+  },
+  role: {
+    type: String,
+    enum: ['user', 'guide', 'lead-guide', 'admin'],
+    default: 'user',
   },
 })
 
