@@ -9,9 +9,9 @@ export interface IUser extends Document {
   photo: string
   password: string
   passwordConfirm: string | undefined
-  passwordChangedAt: Date
-  passwordResetToken: string
-  passwordResetExpire: string
+  passwordChangedAt: Number
+  passwordResetToken: string | undefined
+  passwordResetExpire: string | undefined
 
   role: 'admin' | 'lead-guide' | 'guide' | 'user'
   correctPassword(
@@ -75,6 +75,11 @@ userSchema.pre('save', async function () {
   this.passwordConfirm = undefined
 })
 
+userSchema.pre('save', async function () {
+  if (!this.isModified('password') || this.isNew) return
+  this.passwordChangedAt = Date.now() - 1000
+})
+
 userSchema.methods.correctPassword = async function (
   candidatePassword: string,
   userPassword: string,
@@ -102,11 +107,6 @@ userSchema.methods.createPaswordResetToken = function () {
     .digest('hex')
 
   this.passwordResetExpire = Date.now() + 10 * 60 * 1000
-  console.log('🚀 ~ resetToken:', {
-    resetToken,
-    passwordResetToken: this.passwordResetToken,
-  })
-
   return resetToken
 }
 

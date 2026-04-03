@@ -15,7 +15,7 @@ const DB =
 
 mongoose
   .connect(DB as string)
-  .then(() => console.log('🚀 ~ Databse connected successfully:'))
+  .then(() => console.log('🖲️ ~ Databse connected successfully:', DB))
 
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'),
