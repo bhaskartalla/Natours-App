@@ -74,9 +74,13 @@ export const updateUser = catchAsync(
   },
 )
 
-export const deleteUser = (req: Request, res: Response) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  })
-}
+export const deleteUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    await User.findByIdAndUpdate(req.user?.id, { active: false })
+
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    })
+  },
+)

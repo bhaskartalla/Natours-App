@@ -13,6 +13,7 @@ export interface IUser extends Document {
   passwordChangedAt: Number
   passwordResetToken: string | undefined
   passwordResetExpire: string | undefined
+  active: boolean
 
   role: 'admin' | 'lead-guide' | 'guide' | 'user'
   correctPassword(
@@ -68,6 +69,11 @@ const userSchema = new mongoose.Schema<IUser>({
   passwordResetExpire: {
     type: String,
   },
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 })
 
 userSchema.pre('save', async function () {
@@ -87,6 +93,10 @@ userSchema.methods.correctPassword = async function (
 ): Promise<boolean> {
   return await bcrypt.compare(candidatePassword, userPassword)
 }
+
+userSchema.pre(/^find/, function (this: Query<any, any>) {
+  this.find({ active: true })
+})
 
 userSchema.methods.changedPasswordAt = function (jwtTimeStamp: number) {
   if (this.passwordChangedAt) {

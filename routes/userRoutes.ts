@@ -27,6 +27,8 @@ router.route('/reset-password/:token').patch(resetPassword)
 
 router.route('/update-password').patch(protect, updatePassword)
 
+router.route('/delete-user').delete(protect, deleteUser)
+
 router.route('/update-user').patch(protect, updateUser)
 
 router.route('/').get(getAllUsers).post(createUser)
