@@ -4,9 +4,13 @@ import { MongoServerError } from 'mongodb'
 import { Error as MongooseError } from 'mongoose'
 
 const sendErrorDevelopment = (err: AppError, res: Response) => {
-  return res.status(404).json({
+  res.status(err.statusCode).json({
     status: err.status,
-    error: err,
+    error: {
+      statusCode: err.statusCode,
+      status: err.status,
+      isOperational: err.isOperational,
+    },
     message: err.message,
     stack: err.stack,
   })
@@ -57,7 +61,12 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction,
 ) => {
-  let error = { ...err, message: err.message, name: err.name } as AppError
+  let error = {
+    ...err,
+    message: err.message,
+    name: err.name,
+    stack: err.stack,
+  } as AppError
 
   error.statusCode = error.statusCode || 500
   error.status = error.status || 'error'

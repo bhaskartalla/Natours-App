@@ -10,13 +10,16 @@ dotenv.config({ path: `${__dirname}/config.env` })
 
 import app from './app'
 
-const DB = process.env.DATABASE?.replace(
-  '<PASSWORD>',
-  process.env.DATABASE_PASSWORD ?? '',
-)
+const DB =
+  process.env.IS_LOCAL_DB === 'true'
+    ? process.env.DATABASE_LOCAL
+    : process.env.DATABASE?.replace(
+        '<PASSWORD>',
+        process.env.DATABASE_PASSWORD ?? '',
+      )
 
 mongoose.connect(DB as string).then((con) => {
-  console.log('🖲️ ~ Databse connected successfully:')
+  console.log('🖲️ ~ Databse connected successfully:', DB)
 })
 
 const port = process.env.PORT || 3000

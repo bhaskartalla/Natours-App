@@ -5,10 +5,13 @@ import Tour from '../../models/tourModel'
 
 dotenv.config({ path: `${__dirname}/../../config.env` })
 
-const DB = process.env.DATABASE?.replace(
-  '<PASSWORD>',
-  process.env.DATABASE_PASSWORD ?? '',
-)
+const DB =
+  process.env.IS_LOCAL_DB === 'true'
+    ? process.env.DATABASE_LOCAL
+    : process.env.DATABASE?.replace(
+        '<PASSWORD>',
+        process.env.DATABASE_PASSWORD ?? '',
+      )
 
 mongoose
   .connect(DB as string)
