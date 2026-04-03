@@ -12,6 +12,8 @@ import {
   signUp,
   forgotPassword,
   resetPassword,
+  updatePassword,
+  protect,
 } from '../controllers/authController'
 
 const router = express.Router()
@@ -22,6 +24,8 @@ router.route('/login').post(login)
 router.route('/forgot-password').post(forgotPassword)
 
 router.route('/reset-password/:token').patch(resetPassword)
+
+router.route('/update-password').patch(protect, updatePassword)
 
 router.route('/').get(getAllUsers).post(createUser)
 

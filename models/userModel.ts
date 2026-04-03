@@ -4,6 +4,7 @@ import crypto from 'crypto'
 import bcrypt from 'bcryptjs'
 
 export interface IUser extends Document {
+  id: string
   name: string
   email: string
   photo: string
