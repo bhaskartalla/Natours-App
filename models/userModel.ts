@@ -8,7 +8,7 @@ export interface IUser extends Document {
   name: string
   email: string
   photo: string
-  password: string
+  password: string | undefined
   passwordConfirm: string | undefined
   passwordChangedAt: Number
   passwordResetToken: string | undefined

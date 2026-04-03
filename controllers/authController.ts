@@ -16,6 +16,20 @@ const signToken = (id: string) => {
 const createSendToken = (user: IUser, statusCode: number, res: Response) => {
   const token = signToken(user._id.toString())
 
+  const cookieOptions: Record<any, any> = {
+    expires: new Date(
+      Date.now() +
+        1000 * 60 * 60 * 24 * Number(process.env.JWT_COOKIE_EXPIRES_IN),
+    ),
+    httpOnly: true,
+  }
+
+  if (process.env.NODE_ENV === 'development') cookieOptions.secure = true
+
+  res.cookie('jwt', token, cookieOptions)
+
+  user.password = undefined
+
   return res.status(statusCode).json({
     status: 'success',
     token,
@@ -48,7 +62,7 @@ export const login = catchAsync(
 
     // 2. Check if theuser exists and password is correct
     const user = await User.findOne({ email }).select('+password')
-    if (!user || !(await user.correctPassword(password, user.password)))
+    if (!user || !(await user.correctPassword(password, user.password ?? '')))
       return next(new AppError('Incorrect email or password', 401))
 
     // 3. If everything is ok, then send token to client
@@ -205,7 +219,10 @@ export const updatePassword = catchAsync(
     // Check if POSTed current password is correct
     if (
       !user ||
-      !(await user?.correctPassword(req.body.passwordCurrent, user.password))
+      !(await user?.correctPassword(
+        req.body.passwordCurrent,
+        user.password ?? '',
+      ))
     )
       return next(new AppError('Your current password is wrong.', 401))
 

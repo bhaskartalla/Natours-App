@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express'
 import express from 'express'
 import morgan from 'morgan'
+import rateLimit from 'express-rate-limit'
 
 import { router as tourRouter } from './routes/tourRoutes'
 import { router as userRouter } from './routes/userRoutes'
@@ -9,9 +10,16 @@ import { globalErrorHandler } from './controllers/errorController'
 
 const app = express()
 
-// if (process.env.NODE_ENV === 'development') {
-app.use(morgan('dev'))
-// }
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'))
+}
+
+const limit = rateLimit({
+  max: 3,
+  windowMs: 60 * 60 * 1000,
+  message: 'Too many requests from this IP, please try again in an hour',
+})
+app.use('/api', limit)
 
 app.use(express.json())
 app.use(express.static(`${__dirname}/public`))
