@@ -2,16 +2,18 @@ import mongoose, { Query, Document, Aggregate } from 'mongoose'
 import validator from 'validator'
 import bcrypt from 'bcryptjs'
 
-interface IUser extends Document {
+export interface IUser extends Document {
   name: string
   email: string
   photo: string
   password: string
   passwordConfirm: string | undefined
+  passwordChangedAt: Date
   correctPassword(
     candidatePassword: string,
     userPassword: string,
   ): Promise<boolean>
+  changedPasswordAt(jwtTimeStamp: number): boolean
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -45,6 +47,9 @@ const userSchema = new mongoose.Schema<IUser>({
       message: 'Passwors are not the same',
     },
   },
+  passwordChangedAt: {
+    type: Date,
+  },
 })
 
 userSchema.pre('save', async function () {
@@ -58,6 +63,17 @@ userSchema.methods.correctPassword = async function (
   userPassword: string,
 ): Promise<boolean> {
   return await bcrypt.compare(candidatePassword, userPassword)
+}
+
+userSchema.methods.changedPasswordAt = function (jwtTimeStamp: number) {
+  if (this.passwordChangedAt) {
+    const changeTimeStamp =
+      parseInt(this.passwordChangedAt.getTime(), 10) / 1000
+
+    return jwtTimeStamp < changeTimeStamp
+  }
+
+  return false
 }
 
 export default mongoose.model('User', userSchema)

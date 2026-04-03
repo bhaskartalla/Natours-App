@@ -7,6 +7,7 @@ const sendErrorDevelopment = (err: AppError, res: Response) => {
   res.status(err.statusCode).json({
     status: err.status,
     error: {
+      name: err.name,
       statusCode: err.statusCode,
       status: err.status,
       isOperational: err.isOperational,
@@ -51,6 +52,12 @@ const handleValidationErrorDB = (err: MongooseError.ValidationError) => {
   return new AppError(message, 400)
 }
 
+const handleJWTError = () =>
+  new AppError('Invalid token. Please log in again!', 401)
+
+const handleJWTExpiredError = () =>
+  new AppError('Your token has expired! Please log in again.', 401)
+
 export const globalErrorHandler = (
   err:
     | AppError
@@ -80,7 +87,12 @@ export const globalErrorHandler = (
       error = handleDuplicateFieldsDB(err)
     } else if (err instanceof MongooseError.ValidationError) {
       error = handleValidationErrorDB(err)
+    } else if (err.name === 'JsonWebTokenError') {
+      error = handleJWTError()
+    } else if (err.name === 'TokenExpiredError') {
+      error = handleJWTExpiredError()
     }
+
     sendErrorProduction(error, res)
   }
 }
