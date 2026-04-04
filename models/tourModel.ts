@@ -154,6 +154,12 @@ tourSchema.virtual('durationWeeks').get(function (this: ITour) {
   return this.duration / 7
 })
 
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
+})
+
 tourSchema.pre('save', async function () {
   this.slug = slugify(this.name, { lower: true })
 })
