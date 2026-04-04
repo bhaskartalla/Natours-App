@@ -9,7 +9,7 @@ import crypto from 'crypto'
 
 const signToken = (id: string) => {
   return jwt.sign({ id }, process.env.JWT_SECRET as string, {
-    expiresIn: '5m',
+    expiresIn: '10m',
   })
 }
 
