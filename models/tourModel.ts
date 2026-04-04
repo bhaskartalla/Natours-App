@@ -1,6 +1,17 @@
 import mongoose, { Query, Document, Aggregate } from 'mongoose'
 import slugify from 'slugify'
 
+interface ILocation {
+  type: 'Point'
+  coordinates: number[]
+  address: string
+  description: string
+}
+
+interface ITourLocation extends ILocation {
+  day: number
+}
+
 interface ITour extends Document {
   name: string
   slug: string
@@ -18,6 +29,9 @@ interface ITour extends Document {
   createdAt: Date
   startDates: Date[]
   secretTour: boolean
+  startLocation: ILocation
+  locations: ITourLocation[]
+  guides: String
 }
 
 const tourSchema = new mongoose.Schema<ITour>(
@@ -100,6 +114,35 @@ const tourSchema = new mongoose.Schema<ITour>(
       type: Boolean,
       default: false,
     },
+    startLocation: {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+    },
+    locations: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -113,6 +156,13 @@ tourSchema.virtual('durationWeeks').get(function (this: ITour) {
 
 tourSchema.pre('save', async function () {
   this.slug = slugify(this.name, { lower: true })
+})
+
+tourSchema.pre(/^find/, async function (this: Query<any, any>) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  })
 })
 
 tourSchema.pre(/^find/, async function (this: Query<any, any>) {
