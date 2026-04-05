@@ -2,7 +2,7 @@ import express from 'express'
 import { createReview, getAllReviews } from '../controllers/reviewController'
 import { protect, restrictTo } from '../controllers/authController'
 
-const router = express.Router()
+const router = express.Router({ mergeParams: true })
 
 router
   .route('/')

@@ -9,10 +9,12 @@ import {
   deleteTour,
   getTourStats,
 } from './../controllers/tourController'
-
 import { protect, restrictTo } from '../controllers/authController'
+import { router as reviewRouter } from './reviewRoutes'
 
 const router = express.Router()
+
+router.use('/:tourId/reviews', reviewRouter)
 
 router.route('/top-5-cheap').get(aliasTopTours, getAllTours)
 
