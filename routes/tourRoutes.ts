@@ -9,6 +9,7 @@ import {
   deleteTour,
   getTourStats,
   getToursWithin,
+  getDistances,
 } from './../controllers/tourController'
 import { protect, restrictTo } from '../controllers/authController'
 import { router as reviewRouter } from './reviewRoutes'
@@ -28,6 +29,8 @@ router
 router
   .route('/tours-within/:distance/center/:latlng/unit/:unit')
   .get(getToursWithin)
+
+router.route('/distances/:latlng/unit/:unit').get(getDistances)
 
 router
   .route('/')

@@ -180,8 +180,8 @@ tourSchema.pre(/^find/, async function (this) {
   this.find({ secretTour: { $ne: true } })
 })
 
-tourSchema.pre('aggregate', function (this: Aggregate<any>) {
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } })
-})
+// tourSchema.pre('aggregate', function (this: Aggregate<any>) {
+//   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } })
+// })
 
 export default mongoose.model<ITour>('Tour', tourSchema)
