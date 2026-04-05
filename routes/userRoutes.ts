@@ -7,6 +7,7 @@ import {
   deleteMe,
   updateMe,
   updateUser,
+  getMe,
 } from './../controllers/userController'
 import {
   login,
@@ -28,6 +29,8 @@ router.route('/forgot-password').post(forgotPassword)
 router.route('/reset-password/:token').patch(resetPassword)
 
 router.route('/update-password').patch(protect, updatePassword)
+
+router.route('/me').get(protect, getMe, getUser)
 
 router.route('/delete-me').delete(protect, deleteMe)
 

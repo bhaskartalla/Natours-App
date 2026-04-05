@@ -27,6 +27,11 @@ export const getAllUsers = getAll<IUser>(User)
 
 export const getUser = getOne<IUser>(User)
 
+export const getMe = (req: Request, res: Response, next: NextFunction) => {
+  req.params.id = req.user?.id ?? ''
+  next()
+}
+
 export const updateUser = updateOne<IUser>(User)
 
 export const updateMe = catchAsync(
