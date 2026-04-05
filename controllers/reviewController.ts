@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express'
 import { catchAsync } from '../utils/catchAsync'
-import Review from '../models/reviewModel'
+import Review, { type IReview } from '../models/reviewModel'
+import { createOne, deleteOne, updateOne } from './handlerFactory'
 
 export const getAllReviews = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -17,16 +18,18 @@ export const getAllReviews = catchAsync(
   },
 )
 
-export const createReview = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.body.tour) req.body.tour = req.params.tourId
-    if (!req.body.user) req.body.user = req.user?.id
+export const setTourUserIds = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (!req.body.tour) req.body.tour = req.params.tourId
+  if (!req.body.user) req.body.user = req.user?.id
+  next()
+}
 
-    const review = await Review.create(req.body)
+export const createReview = createOne<IReview>(Review)
 
-    res.status(201).json({
-      status: 'success',
-      data: { review },
-    })
-  },
-)
+export const updateReview = updateOne<IReview>(Review)
+
+export const deleteReview = deleteOne<IReview>(Review)

@@ -12,7 +12,7 @@ interface ITourLocation extends ILocation {
   day: number
 }
 
-interface ITour extends Document {
+export interface ITour extends Document {
   name: string
   slug: string
   duration: number

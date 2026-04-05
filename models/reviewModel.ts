@@ -1,6 +1,12 @@
-import mongoose, { Query } from 'mongoose'
+import mongoose, { Query, Document } from 'mongoose'
 
-interface IReview extends Document {}
+export interface IReview extends Document {
+  review: string
+  rating: number
+  createdAt: Date
+  tour: string
+  user: string
+}
 
 const reviewSchema = new mongoose.Schema(
   {

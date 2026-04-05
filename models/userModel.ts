@@ -1,4 +1,4 @@
-import mongoose, { Query, Document, Aggregate } from 'mongoose'
+import mongoose, { Query, Document } from 'mongoose'
 import validator from 'validator'
 import crypto from 'crypto'
 import bcrypt from 'bcryptjs'

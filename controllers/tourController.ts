@@ -1,8 +1,9 @@
 import type { Request, Response, NextFunction } from 'express'
-import Tour from '../models/tourModel'
+import Tour, { type ITour } from '../models/tourModel'
 import APIFeatures from '../utils/apiFeatures'
 import { catchAsync } from '../utils/catchAsync'
 import AppError from '../utils/appError'
+import { createOne, deleteOne, updateOne } from './handlerFactory'
 
 export const aliasTopTours = (
   req: Request,
@@ -50,48 +51,11 @@ export const getTour = catchAsync(
   },
 )
 
-export const createTour = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const newTour = await Tour.create(req.body)
-    res.status(201).json({
-      status: 'success',
-      data: {
-        tour: newTour,
-      },
-    })
-  },
-)
+export const createTour = createOne<ITour>(Tour)
 
-export const updateTour = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    })
-    if (!updatedTour)
-      return next(new AppError('No tour found with that ID', 404))
+export const updateTour = updateOne<ITour>(Tour)
 
-    res.status(200).json({
-      status: 'success',
-      data: {
-        tour: updatedTour,
-      },
-    })
-  },
-)
-
-export const deleteTour = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const tour = await Tour.findByIdAndDelete(req.params.id)
-
-    if (!tour) return next(new AppError('No tour found with that ID', 404))
-
-    res.status(204).json({
-      status: 'success',
-      data: null,
-    })
-  },
-)
+export const deleteTour = deleteOne<ITour>(Tour)
 
 export const getTourStats = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {

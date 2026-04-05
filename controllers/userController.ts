@@ -1,7 +1,8 @@
 import type { NextFunction, Request, Response } from 'express'
 import { catchAsync } from '../utils/catchAsync'
-import User from '../models/userModel'
+import User, { type IUser } from '../models/userModel'
 import AppError from '../utils/appError'
+import { deleteOne, updateOne } from './handlerFactory'
 
 const filterObj = (
   body: Record<string, any>,
@@ -34,13 +35,15 @@ export const getUser = (req: Request, res: Response) => {
     message: 'This route is not yet defined!',
   })
 }
+
 export const createUser = (req: Request, res: Response) => {
   res.status(500).json({
     status: 'error',
     message: 'This route is not yet defined!',
   })
 }
-export const updateUser = catchAsync(
+
+export const updateMe = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // Create error if user POSTs password data
 
@@ -74,7 +77,7 @@ export const updateUser = catchAsync(
   },
 )
 
-export const deleteUser = catchAsync(
+export const deleteMe = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     await User.findByIdAndUpdate(req.user?.id, { active: false })
 
@@ -84,3 +87,7 @@ export const deleteUser = catchAsync(
     })
   },
 )
+
+export const updateUser = updateOne<IUser>(User)
+
+export const deleteUser = deleteOne<IUser>(User)
