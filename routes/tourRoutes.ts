@@ -8,6 +8,7 @@ import {
   updateTour,
   deleteTour,
   getTourStats,
+  getToursWithin,
 } from './../controllers/tourController'
 import { protect, restrictTo } from '../controllers/authController'
 import { router as reviewRouter } from './reviewRoutes'
@@ -23,6 +24,10 @@ router.route('/tour-stats').get(getTourStats)
 router
   .route('/monthly-plan/:year')
   .get(protect, restrictTo('admin', 'lead-guide', 'guide'), getMonthlyPlan)
+
+router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(getToursWithin)
 
 router
   .route('/')

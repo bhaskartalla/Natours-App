@@ -153,6 +153,7 @@ const tourSchema = new mongoose.Schema<ITour>(
 
 tourSchema.index({ price: 1, ratingsAverage: -1 })
 tourSchema.index({ slug: 1 })
+tourSchema.index({ startLocation: '2dsphere' })
 
 tourSchema.virtual('durationWeeks').get(function (this: ITour) {
   return this.duration / 7
