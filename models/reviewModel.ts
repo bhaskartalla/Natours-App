@@ -45,6 +45,8 @@ const reviewSchema = new mongoose.Schema<IReview>(
   },
 )
 
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true })
+
 reviewSchema.statics.calcAverageRatings = async function (
   tourId: mongoose.Types.ObjectId,
 ) {
