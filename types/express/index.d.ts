@@ -8,3 +8,17 @@ declare global {
     }
   }
 }
+
+declare module 'mongoose' {
+  interface Query<
+    ResultType,
+    DocType,
+    THelpers,
+    RawDocType,
+    QueryOp,
+    TInstanceMethods,
+  > {
+    start?: number
+    r?: any
+  }
+}

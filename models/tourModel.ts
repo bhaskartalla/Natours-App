@@ -150,6 +150,9 @@ const tourSchema = new mongoose.Schema<ITour>(
   },
 )
 
+tourSchema.index({ price: 1, ratingsAverage: -1 })
+tourSchema.index({ slug: 1 })
+
 tourSchema.virtual('durationWeeks').get(function (this: ITour) {
   return this.duration / 7
 })
@@ -164,14 +167,14 @@ tourSchema.pre('save', async function () {
   this.slug = slugify(this.name, { lower: true })
 })
 
-tourSchema.pre(/^find/, async function (this: Query<any, any>) {
+tourSchema.pre(/^find/, async function (this) {
   this.populate({
     path: 'guides',
     select: '-__v -passwordChangedAt',
   })
 })
 
-tourSchema.pre(/^find/, async function (this: Query<any, any>) {
+tourSchema.pre(/^find/, async function (this) {
   this.find({ secretTour: { $ne: true } })
 })
 

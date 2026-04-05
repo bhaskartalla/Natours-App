@@ -1,14 +1,19 @@
-import mongoose, { Query, Document } from 'mongoose'
+import mongoose, { Document, Model } from 'mongoose'
+import Tour from '../models/tourModel'
 
 export interface IReview extends Document {
   review: string
   rating: number
   createdAt: Date
-  tour: string
-  user: string
+  tour: mongoose.Types.ObjectId
+  user: mongoose.Types.ObjectId
 }
 
-const reviewSchema = new mongoose.Schema(
+interface IReviewModel extends Model<IReview> {
+  calcAverageRatings(tourId: mongoose.Types.ObjectId): Promise<void>
+}
+
+const reviewSchema = new mongoose.Schema<IReview>(
   {
     review: {
       type: String,
@@ -40,11 +45,56 @@ const reviewSchema = new mongoose.Schema(
   },
 )
 
-reviewSchema.pre(/^find/, async function (this: Query<any, any>) {
+reviewSchema.statics.calcAverageRatings = async function (
+  tourId: mongoose.Types.ObjectId,
+) {
+  const stats = await this.aggregate([
+    {
+      $match: { tour: tourId },
+    },
+    {
+      $group: {
+        _id: '$tour',
+        nRating: { $sum: 1 },
+        avgRating: { $avg: '$rating' },
+      },
+    },
+  ])
+
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].nRating,
+      ratingsAverage: stats[0].avgRating,
+    })
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5,
+    })
+  }
+}
+
+reviewSchema.post('save', async function () {
+  ;(this.constructor as IReviewModel).calcAverageRatings(
+    this.tour as mongoose.Types.ObjectId,
+  )
+})
+
+reviewSchema.pre(/^findOneAnd/, async function (this) {
+  this.r = await this.clone().findOne()
+})
+
+reviewSchema.post(/^findOneAnd/, async function (this) {
+  if (this.r) {
+    await (this.model as IReviewModel).calcAverageRatings(this.r.tour)
+  }
+})
+
+reviewSchema.pre(/^find/, async function (this) {
   this.populate({
     path: 'user',
     select: 'name photo',
   })
 })
 
-export default mongoose.model<IReview>('Review', reviewSchema)
+export default mongoose.model<IReview, IReviewModel>('Review', reviewSchema)
