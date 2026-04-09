@@ -38,6 +38,7 @@ const userSchema = new mongoose.Schema<IUser>({
   },
   photo: {
     type: String,
+    default: 'default.jpg',
   },
   password: {
     type: String,
@@ -94,7 +95,7 @@ userSchema.methods.correctPassword = async function (
   return await bcrypt.compare(candidatePassword, userPassword)
 }
 
-userSchema.pre(/^find/, function (this: Query<any, any>) {
+userSchema.pre(/^find/, function (this) {
   this.find({ active: true })
 })
 

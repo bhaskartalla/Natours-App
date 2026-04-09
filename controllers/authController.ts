@@ -70,6 +70,20 @@ export const login = catchAsync(
   },
 )
 
+export const logout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() * 3 * 1000),
+    httpOnly: true,
+  })
+
+  res.status(200).json({
+    status: 'success',
+  })
+}
 export const protect = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // 1 Get the token and check if it's there
