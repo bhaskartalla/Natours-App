@@ -8,6 +8,7 @@ import {
   updateMe,
   updateUser,
   getMe,
+  updateUserPhoto,
 } from './../controllers/userController'
 import {
   login,
@@ -18,6 +19,7 @@ import {
   protect,
   restrictTo,
 } from '../controllers/authController'
+
 
 const router = express.Router()
 
@@ -32,7 +34,7 @@ router.use(protect)
 router.route('/update-password').patch(updatePassword)
 router.route('/me').get(getMe, getUser)
 router.route('/delete-me').delete(deleteMe)
-router.route('/update-me').patch(updateMe)
+router.route('/update-me').patch(updateUserPhoto, updateMe)
 
 // Restrict other to use below routes after this middleware
 router.use(restrictTo('admin'))
