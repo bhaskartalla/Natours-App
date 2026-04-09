@@ -1,30 +1,12 @@
 import multer, { type FileFilterCallback } from 'multer'
+import sharp from 'sharp'
 import type { NextFunction, Request, Response } from 'express'
 import { catchAsync } from '../utils/catchAsync'
 import User, { type IUser } from '../models/userModel'
 import AppError from '../utils/appError'
 import { deleteOne, getAll, getOne, updateOne } from './handlerFactory'
 
-export const updateUser = updateOne<IUser>(User)
-
-const multerStorage = multer.diskStorage({
-  destination: (
-    req: Request,
-    file: Express.Multer.File,
-    cb: (error: Error | null, destination: string) => void,
-  ) => {
-    cb(null, 'public/img/users')
-  },
-  filename: function (
-    req: Request,
-    file: Express.Multer.File,
-    cb: (error: Error | null, filename: string) => void,
-  ) {
-    const ext = file.mimetype.split('/')[1]
-    const fileName = `user-${req.user?.id}-${Date.now()}.${ext}`
-    cb(null, fileName)
-  },
-})
+const multerStorage = multer.memoryStorage()
 
 const multerFilter = (
   req: Request,
@@ -46,6 +28,25 @@ const multerFilter = (
 const upload = multer({ storage: multerStorage, fileFilter: multerFilter })
 
 export const updateUserPhoto = upload.single('photo')
+
+export const resizeUserPhoto = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  console.log('🚀 ~ resizeUserPhoto ~ req:', req.file)
+  if (!req.file) return next()
+
+  req.file.filename = `user-${req.user?.id}-${Date.now()}.jpeg`
+
+  sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.file.filename}`)
+
+  next()
+}
 
 const filterObj = (
   body: Record<string, any>,
@@ -77,9 +78,7 @@ export const getMe = (req: Request, res: Response, next: NextFunction) => {
 
 export const updateMe = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log('🚀 ~ req:', { file: req.file })
     // Create error if user POSTs password data
-
     if (req.body.password || req.body.passwordConfirm)
       return next(
         new AppError(
@@ -110,6 +109,8 @@ export const updateMe = catchAsync(
     })
   },
 )
+
+export const updateUser = updateOne<IUser>(User)
 
 export const deleteUser = deleteOne<IUser>(User)
 

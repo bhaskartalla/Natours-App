@@ -9,6 +9,7 @@ import {
   updateUser,
   getMe,
   updateUserPhoto,
+  resizeUserPhoto,
 } from './../controllers/userController'
 import {
   login,
@@ -35,7 +36,7 @@ router.use(protect)
 router.route('/update-password').patch(updatePassword)
 router.route('/me').get(getMe, getUser)
 router.route('/delete-me').delete(deleteMe)
-router.route('/update-me').patch(updateUserPhoto, updateMe)
+router.route('/update-me').patch(updateUserPhoto, resizeUserPhoto, updateMe)
 
 // Restrict other to use below routes after this middleware
 router.use(restrictTo('admin'))
