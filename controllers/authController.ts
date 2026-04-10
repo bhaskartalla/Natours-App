@@ -4,7 +4,7 @@ import User, { type IUser } from '../models/userModel'
 import jwt from 'jsonwebtoken'
 import { promisify } from 'util'
 import AppError from '../utils/appError'
-import { sendEmail } from '../utils/email'
+import Email from '../utils/email'
 import crypto from 'crypto'
 
 const signToken = (id: string) => {
@@ -49,6 +49,10 @@ export const signUp = catchAsync(
       passwordChangedAt: req.body.passwordChangedAt,
       role: req.body.role,
     })
+
+    const url = `${req.protocol}://${req.get('host')}/me`
+    await new Email(newUser, url).sendWelcome()
+
     createSendToken(newUser, 201, res)
   },
 )
@@ -84,6 +88,7 @@ export const logout = async (
     status: 'success',
   })
 }
+
 export const protect = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // 1 Get the token and check if it's there
@@ -170,11 +175,11 @@ export const forgotPassword = catchAsync(
     const resetURL = `${req.protocol}://${req.get('host')}/api/v1/reset-password/${resetToken}`
     const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`
     try {
-      await sendEmail({
-        to: user.email,
-        subject: 'Your password reset token (valid for 10 min)',
-        message,
-      })
+      // await sendEmail({
+      //   to: user.email,
+      //   subject: 'Your password reset token (valid for 10 min)',
+      //   message,
+      // })
 
       res.status(200).json({
         status: 'success',
