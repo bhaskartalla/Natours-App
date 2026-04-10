@@ -29,24 +29,22 @@ const upload = multer({ storage: multerStorage, fileFilter: multerFilter })
 
 export const updateUserPhoto = upload.single('photo')
 
-export const resizeUserPhoto = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  console.log('🚀 ~ resizeUserPhoto ~ req:', req.file)
-  if (!req.file) return next()
+export const resizeUserPhoto = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.log('🚀 ~ resizeUserPhoto ~ req:', req.file)
+    if (!req.file) return next()
 
-  req.file.filename = `user-${req.user?.id}-${Date.now()}.jpeg`
+    req.file.filename = `user-${req.user?.id}-${Date.now()}.jpeg`
 
-  sharp(req.file.buffer)
-    .resize(500, 500)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toFile(`public/img/users/${req.file.filename}`)
+    await sharp(req.file.buffer)
+      .resize(500, 500)
+      .toFormat('jpeg')
+      .jpeg({ quality: 90 })
+      .toFile(`public/img/users/${req.file.filename}`)
 
-  next()
-}
+    next()
+  },
+)
 
 const filterObj = (
   body: Record<string, any>,

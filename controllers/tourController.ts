@@ -1,3 +1,5 @@
+import multer, { type FileFilterCallback } from 'multer'
+import sharp from 'sharp'
 import type { Request, Response, NextFunction } from 'express'
 import Tour, { type ITour } from '../models/tourModel'
 import APIFeatures from '../utils/apiFeatures'
@@ -10,6 +12,71 @@ import {
   getOne,
   updateOne,
 } from './handlerFactory'
+
+const multerStorage = multer.memoryStorage()
+
+const multerFilter = (
+  req: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback,
+) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true)
+  } else {
+    cb(
+      new AppError(
+        'Not an image! Please upload only images.',
+        400,
+      ) as unknown as Error,
+    )
+  }
+}
+
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter })
+
+export const uploadTourImages = upload.fields([
+  { name: 'imageCover', maxCount: 1 },
+  { name: 'images', maxCount: 3 },
+])
+
+export const resizeTourImages = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const files = req.files as {
+      imageCover: Express.Multer.File[]
+      images: Express.Multer.File[]
+    }
+    const imageCover = files.imageCover?.[0]
+    const images = files.images
+
+    console.log('🚀 ~ resizeTourImages ~ :', req.files)
+
+    if (!imageCover || !images) return next()
+
+    // imageCover
+    req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`
+
+    await sharp(imageCover.buffer)
+      .resize(2000, 1333)
+      .toFormat('jpeg')
+      .jpeg({ quality: 90 })
+      .toFile(`public/img/tours/${req.body.imageCover}`)
+
+    // images
+    req.body.images = []
+    const uploadPromiseImages = images.map(async (file, index) => {
+      const filename = `tour-${req.params.id}-${Date.now()}-${index + 1}.jpeg`
+      await sharp(file.buffer)
+        .resize(2000, 1333)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(filename)
+      req.body.images.push(filename)
+    })
+
+    await Promise.all(uploadPromiseImages)
+    next()
+  },
+)
 
 export const aliasTopTours = (
   req: Request,
