@@ -22,15 +22,15 @@ const app = express()
 // 1) GLOBAL MIDDLEWARES
 // Set cors
 app.use(cors())
-app.options('*', cors())
+app.options('/{*splat}', cors())
 
 // Set security HTTP headers
 app.use(helmet())
 
 // Development logging
-// if (process.env.NODE_ENV === 'development') {
-app.use(morgan('dev'))
-// }
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'))
+}
 
 // Limit requests from same API
 const limit = rateLimit({
@@ -96,9 +96,10 @@ app.use('/api/v1/users', userRouter)
 app.use('/api/v1/reviews', reviewRouter)
 app.use('/api/v1/bookings', bookingRouter)
 
-app.all('*splat', (req: Request, res: Response, next: NextFunction) => {
+app.all('/{*splat}', (req: Request, res: Response, next: NextFunction) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404))
 })
+
 // Global error handling
 app.use(globalErrorHandler)
 
