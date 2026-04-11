@@ -10,6 +10,7 @@ import xss from 'xss-clean'
 import { router as tourRouter } from './routes/tourRoutes'
 import { router as userRouter } from './routes/userRoutes'
 import { router as reviewRouter } from './routes/reviewRoutes'
+import { router as bookingRouter } from './routes/bookingRoutes'
 import AppError from './utils/appError'
 import { globalErrorHandler } from './controllers/errorController'
 
@@ -77,6 +78,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/api/v1/tours', tourRouter)
 app.use('/api/v1/users', userRouter)
 app.use('/api/v1/reviews', reviewRouter)
+app.use('/api/v1/bookings', bookingRouter)
 
 app.all('*splat', (req: Request, res: Response, next: NextFunction) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404))

@@ -2,7 +2,6 @@ import multer, { type FileFilterCallback } from 'multer'
 import sharp from 'sharp'
 import type { Request, Response, NextFunction } from 'express'
 import Tour, { type ITour } from '../models/tourModel'
-import APIFeatures from '../utils/apiFeatures'
 import { catchAsync } from '../utils/catchAsync'
 import AppError from '../utils/appError'
 import {
