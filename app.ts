@@ -7,6 +7,7 @@ import helmet from 'helmet'
 import hpp from 'hpp'
 import mongoSanitize from 'express-mongo-sanitize'
 import xss from 'xss-clean'
+import cors from 'cors'
 
 import { router as tourRouter } from './routes/tourRoutes'
 import { router as userRouter } from './routes/userRoutes'
@@ -18,6 +19,10 @@ import { globalErrorHandler } from './controllers/errorController'
 const app = express()
 
 // 1) GLOBAL MIDDLEWARES
+// Set cors
+app.use(cors())
+app.options('*', cors())
+
 // Set security HTTP headers
 app.use(helmet())
 
