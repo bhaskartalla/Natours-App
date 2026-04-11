@@ -7,11 +7,11 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "start": "npx nodemon --exec 'npx tsx server.ts' --ext ts",
+    "dev": "npx nodemon --exec 'npx tsx server.ts' --ext ts",
     "start:prod": "NODE_ENV=production npx nodemon --exec 'npx tsx server.ts' --ext ts",
     "debug": "ndb server.ts",
     "build": "tsc",
-    "start:build": "node dist/server.js"
+    "start": "node dist/server.js"
   },
   "devDependencies": {
     "@types/compression": "^1.8.1",
