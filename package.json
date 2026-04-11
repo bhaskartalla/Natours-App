@@ -8,10 +8,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx nodemon --exec 'npx tsx server.ts' --ext ts",
-    "start:prod": "NODE_ENV=production npx nodemon --exec 'npx tsx server.ts' --ext ts",
+    "prod": "NODE_ENV=production npx nodemon --exec 'npx tsx server.ts' --ext ts",
     "debug": "ndb server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start:dev": "node dist/server.js",
     "start:prod": "NODE_ENV=production node dist/server.js"
   },
   "devDependencies": {
@@ -62,5 +62,8 @@
     "stripe": "^22.0.1",
     "validator": "^13.15.26",
     "xss-clean": "^0.1.4"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
