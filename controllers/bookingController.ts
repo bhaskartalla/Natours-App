@@ -54,11 +54,15 @@ export const getCheckoutSession = catchAsync(
 
 const createBookingCheckout = async (session: any) => {
   // Namespace 'StripeConstructor' has no exported member 'Checkout'.ts(2694)
-
+  console.log('🚀 ~ createBookingCheckout ~ 1:')
   const tour = session.client_reference_id
+  console.log('🚀 ~ createBookingCheckout ~ 2:', tour.name)
   const user = (await User.findOne({ email: session.customer_email })).id
+  console.log('🚀 ~ createBookingCheckout ~ 3:', user.email)
   const price = session.display_items[0].amount / 100
-  await Booking.create({ tour, user, price })
+  console.log('🚀 ~ createBookingCheckout ~ 4:', price)
+  const booking = await Booking.create({ tour, user, price })
+  console.log('🚀 ~ createBookingCheckout ~ 5:', booking)
 }
 
 export const webhookCheckout = (
