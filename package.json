@@ -1,9 +1,9 @@
 {
-  "name": "natours",
+  "name": "natours-app",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",
-  "author": "",
+  "author": "Bhaskar Talla",
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,8 @@
     "start:prod": "NODE_ENV=production npx nodemon --exec 'npx tsx server.ts' --ext ts",
     "debug": "ndb server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "start:prod": "NODE_ENV=production node dist/server.js"
   },
   "devDependencies": {
     "@types/compression": "^1.8.1",

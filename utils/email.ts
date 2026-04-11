@@ -41,11 +41,14 @@ class Email {
 
   async send(template: string, subject: string) {
     // 1) Render HTML based on a pug template
-    const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
-      firstName: this.firstName,
-      url: this.url,
-      subject,
-    })
+    const html = pug.renderFile(
+      `${process.cwd()}/views/email/${template}.pug`,
+      {
+        firstName: this.firstName,
+        url: this.url,
+        subject,
+      },
+    )
 
     // 2) Define email options
     const mailOptions = {
