@@ -3,12 +3,6 @@ import type { IUser } from '../models/userModel'
 import { convert } from 'html-to-text'
 import pug from 'pug'
 
-type EmailOptions = {
-  to: string
-  subject: string
-  message: string
-}
-
 class Email {
   to: string
   firstName: string

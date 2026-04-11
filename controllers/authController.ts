@@ -49,10 +49,8 @@ export const signUp = catchAsync(
       passwordChangedAt: req.body.passwordChangedAt,
       role: req.body.role,
     })
-
     const url = `${req.protocol}://${req.get('host')}/me`
     await new Email(newUser, url).sendWelcome()
-
     createSendToken(newUser, 201, res)
   },
 )
