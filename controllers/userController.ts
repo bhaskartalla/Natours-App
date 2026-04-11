@@ -31,7 +31,6 @@ export const updateUserPhoto = upload.single('photo')
 
 export const resizeUserPhoto = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log('🚀 ~ resizeUserPhoto ~ req:', req.file)
     if (!req.file) return next()
 
     req.file.filename = `user-${req.user?.id}-${Date.now()}.jpeg`

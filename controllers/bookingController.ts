@@ -2,6 +2,7 @@ import Stripe from 'stripe'
 import { catchAsync } from '../utils/catchAsync'
 import type { Request, Response, NextFunction } from 'express'
 import Tour from '../models/tourModel'
+import User from '../models/userModel'
 import Booking from '../models/bookingModel'
 import {
   createOne,
@@ -51,22 +52,40 @@ export const getCheckoutSession = catchAsync(
   },
 )
 
-export const createBookingCheckout = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    // This is only TEMPORARY, because it's UNSECURE: everyone can make bookings without paying
-    const { tour, user, price } = req.query
+const createBookingCheckout = async (session: any) => {
+  // Namespace 'StripeConstructor' has no exported member 'Checkout'.ts(2694)
 
-    if (!tour || !user || !price) return next()
+  const tour = session.client_reference_id
+  const user = (await User.findOne({ email: session.customer_email })).id
+  const price = session.display_items[0].amount / 100
+  await Booking.create({ tour, user, price })
+}
 
-    await Booking.create({
-      tour: tour as string,
-      user: user as string,
-      price: Number(price),
-    })
+export const webhookCheckout = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
+  const signature = req.headers['stripe-signature'] ?? ''
+  let event
 
-    res.redirect(req.originalUrl.split('?')[0] ?? '')
-  },
-)
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET as string,
+    )
+  } catch (error) {
+    const err = error as Error
+    return res.status(400).send(`Webhook error: ${err.message}`)
+  }
+
+  if (event.type === 'checkout.session.completed')
+    createBookingCheckout(event.data.object)
+
+  res.status(200).json({ received: true })
+}
 
 export const createBooking = createOne(Booking)
 export const getBooking = getOne(Booking)

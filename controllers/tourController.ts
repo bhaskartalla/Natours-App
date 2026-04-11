@@ -47,8 +47,6 @@ export const resizeTourImages = catchAsync(
     const imageCover = files.imageCover?.[0]
     const images = files.images
 
-    console.log('🚀 ~ resizeTourImages ~ :', req.files)
-
     if (!imageCover || !images) return next()
 
     // imageCover

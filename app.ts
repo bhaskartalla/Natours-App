@@ -13,6 +13,7 @@ import { router as tourRouter } from './routes/tourRoutes'
 import { router as userRouter } from './routes/userRoutes'
 import { router as reviewRouter } from './routes/reviewRoutes'
 import { router as bookingRouter } from './routes/bookingRoutes'
+import { webhookCheckout } from './controllers/bookingController'
 import AppError from './utils/appError'
 import { globalErrorHandler } from './controllers/errorController'
 
@@ -38,6 +39,13 @@ const limit = rateLimit({
   message: 'Too many requests from this IP, please try again in an hour',
 })
 app.use('/api', limit)
+
+// Stripe webhook, BEFORE body-parser, because stripe needs the body as stream
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  webhookCheckout,
+)
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }))

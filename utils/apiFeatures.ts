@@ -1,11 +1,10 @@
-import { Query } from 'mongoose'
 import type { Request } from 'express'
 
 class APIFeatures {
-  query: Query<any[], any>
+  query: any
   queryString: Record<string, any>
 
-  constructor(query: Query<any[], any>, req: Request) {
+  constructor(query: any, req: Request) {
     this.query = query
     const aliasQuery = (req as any).aliasQuery || {}
     const queryObj = { ...req.query, ...aliasQuery } as Record<string, any>
@@ -41,9 +40,6 @@ class APIFeatures {
 
   sort() {
     if (this.queryString.sort) {
-      console.log('🚀 ~ APIFeatures ~ ', {
-        sort: this.queryString.sort,
-      })
       const sortBy = (this.queryString.sort as string).split(',').join(' ')
       this.query = this.query.sort(sortBy)
     } else {

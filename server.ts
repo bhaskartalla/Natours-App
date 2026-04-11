@@ -1,8 +1,10 @@
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 process.on('uncaughtException', (err) => {
-  console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...')
-  console.log(err.name, err.message)
+  console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...', {
+    name: err.name,
+    message: err.message,
+  })
   process.exit(1)
 })
 
