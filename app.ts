@@ -27,10 +27,8 @@ app.options('/{*splat}', cors())
 // Set security HTTP headers
 app.use(helmet())
 
-// Development logging
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'))
-}
+// API logging
+app.use(morgan('dev'))
 
 app.set('trust proxy', 1)
 
