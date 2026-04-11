@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from 'express'
 import express from 'express'
+import compression from 'compression'
 import morgan from 'morgan'
 import rateLimit from 'express-rate-limit'
 import helmet from 'helmet'
@@ -67,6 +68,8 @@ app.use(
 
 // Serving static files
 app.use(express.static(`${__dirname}/public`))
+
+app.use(compression())
 
 // Test middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
