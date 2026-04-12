@@ -31,7 +31,7 @@ export const getCheckoutSession = catchAsync(
         {
           quantity: 1,
           price_data: {
-            currency: 'rupee',
+            currency: 'rsd',
             unit_amount: (tour?.price ?? 0) * 100,
             product_data: {
               name: `${tour?.name} Tour`,
