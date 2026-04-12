@@ -50,7 +50,9 @@ export const signUp = catchAsync(
       role: req.body.role,
     })
     const url = `${req.protocol}://${req.get('host')}/me`
-    await new Email(newUser, url).sendWelcome()
+    await new Email(newUser, url)
+      .sendWelcome()
+      .catch((error) => console.log('🚀 ~ Welcome Email error:', error))
     createSendToken(newUser, 201, res)
   },
 )
