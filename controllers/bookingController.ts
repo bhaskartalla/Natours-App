@@ -31,7 +31,7 @@ export const getCheckoutSession = catchAsync(
         {
           quantity: 1,
           price_data: {
-            currency: 'usd',
+            currency: 'rupee',
             unit_amount: (tour?.price ?? 0) * 100,
             product_data: {
               name: `${tour?.name} Tour`,
@@ -54,14 +54,14 @@ export const getCheckoutSession = catchAsync(
 
 const createBookingCheckout = async (session: any) => {
   // Namespace 'StripeConstructor' has no exported member 'Checkout'.ts(2694)
-  console.log('🚀 ~ createBookingCheckout ~ 1:')
-  const tour = session.client_reference_id
-  console.log('🚀 ~ createBookingCheckout ~ 2:', tour.name)
-  const user = (await User.findOne({ email: session.customer_email })).id
-  console.log('🚀 ~ createBookingCheckout ~ 3:', user.email)
-  const price = session.display_items[0].amount / 100
+  console.log('🚀 ~ createBookingCheckout ~ 1:', session)
+  const tourId = session.client_reference_id
+  console.log('🚀 ~ createBookingCheckout ~ 2:', tourId)
+  const userId = (await User.findOne({ email: session.customer_email })).id
+  console.log('🚀 ~ createBookingCheckout ~ 3:', userId)
+  const price = session.amount_total / 100
   console.log('🚀 ~ createBookingCheckout ~ 4:', price)
-  const booking = await Booking.create({ tour, user, price })
+  const booking = await Booking.create({ tour: tourId, user: userId, price })
   console.log('🚀 ~ createBookingCheckout ~ 5:', booking)
 }
 
@@ -73,6 +73,7 @@ export const webhookCheckout = (
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
   const signature = req.headers['stripe-signature'] ?? ''
   let event
+  console.log('🚀 ~ webhookCheckout ~ 1:', { stripe, signature })
 
   try {
     event = stripe.webhooks.constructEvent(
@@ -82,9 +83,11 @@ export const webhookCheckout = (
     )
   } catch (error) {
     const err = error as Error
+    console.log('🚀 ~ webhookCheckout ~ 3:', event)
     return res.status(400).send(`Webhook error: ${err.message}`)
   }
 
+  console.log('🚀 ~ webhookCheckout ~ 2:', event)
   if (event.type === 'checkout.session.completed')
     createBookingCheckout(event.data.object)
 
