@@ -21,9 +21,7 @@ export const getCheckoutSession = catchAsync(
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      success_url: `${req.protocol}://${req.get('host')}/my-tours/?tour=${
-        req.params.tourId
-      }&user=${req.user?.id}&price=${tour.price}`,
+      success_url: 'https://stickky-note-app.web.app',
       cancel_url: 'https://stickky-note-app.web.app/profile',
       customer_email: req.user?.email ?? '',
       client_reference_id: tour.id,
