@@ -10,7 +10,7 @@ import {
   getMe,
   updateUserPhoto,
   resizeUserPhoto,
-} from './../controllers/userController'
+} from '@modules/user/user.controller'
 import {
   login,
   signUp,
@@ -20,7 +20,7 @@ import {
   protect,
   restrictTo,
   logout,
-} from '../controllers/authController'
+} from '@modules/auth/auth.controller'
 
 const router = express.Router()
 

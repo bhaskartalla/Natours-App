@@ -1,28 +1,8 @@
-import mongoose, { Query, Document } from 'mongoose'
+import mongoose from 'mongoose'
 import validator from 'validator'
 import crypto from 'crypto'
 import bcrypt from 'bcryptjs'
-
-export interface IUser extends Document {
-  id: string
-  name: string
-  email: string
-  photo: string
-  password: string | undefined
-  passwordConfirm: string | undefined
-  passwordChangedAt: Number
-  passwordResetToken: string | undefined
-  passwordResetExpire: string | undefined
-  active: boolean
-
-  role: 'admin' | 'lead-guide' | 'guide' | 'user'
-  correctPassword(
-    candidatePassword: string,
-    userPassword: string,
-  ): Promise<boolean>
-  changedPasswordAt(jwtTimeStamp: number): boolean
-  createPaswordResetToken(): string
-}
+import { IUser } from './user.types'
 
 const userSchema = new mongoose.Schema<IUser>({
   name: {

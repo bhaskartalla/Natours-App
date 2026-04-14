@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express'
-import AppError from '../utils/appError'
+import AppError from '@shared/utils/appError'
 import { MongoServerError } from 'mongodb'
 import { Error as MongooseError } from 'mongoose'
 

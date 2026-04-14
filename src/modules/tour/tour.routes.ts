@@ -12,9 +12,9 @@ import {
   getDistances,
   uploadTourImages,
   resizeTourImages,
-} from './../controllers/tourController'
-import { protect, restrictTo } from '../controllers/authController'
-import { router as reviewRouter } from './reviewRoutes'
+} from '@modules/tour/tour.controller'
+import { protect, restrictTo } from '@modules/auth/auth.controller'
+import { router as reviewRouter } from '@modules/review/review.routes'
 
 const router = express.Router()
 

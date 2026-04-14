@@ -1,6 +1,5 @@
 import express from 'express'
-
-import { protect, restrictTo } from '../controllers/authController'
+import { protect, restrictTo } from '@modules/auth/auth.controller'
 import {
   createBooking,
   deleteBooking,
@@ -8,7 +7,7 @@ import {
   getBooking,
   getCheckoutSession,
   updateBooking,
-} from '../controllers/bookingController'
+} from '@modules/booking/booking.controller'
 
 const router = express.Router()
 

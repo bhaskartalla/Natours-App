@@ -1,16 +1,16 @@
 import Stripe from 'stripe'
-import { catchAsync } from '../utils/catchAsync'
 import type { Request, Response, NextFunction } from 'express'
-import Tour from '../models/tourModel'
-import User from '../models/userModel'
-import Booking from '../models/bookingModel'
+import { catchAsync } from '@shared/utils/catchAsync'
+import Tour from '@modules/tour/tour.model'
+import User from '@modules/user/user.model'
+import Booking from '@modules/booking/booking.model'
 import {
   createOne,
   deleteOne,
   getAll,
   getOne,
   updateOne,
-} from './handlerFactory'
+} from '@shared/factory/handlerFactory'
 
 export const getCheckoutSession = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {

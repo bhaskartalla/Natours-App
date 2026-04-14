@@ -1,11 +1,12 @@
-import { catchAsync } from '../utils/catchAsync'
-import type { Request, Response, NextFunction } from 'express'
-import User, { type IUser } from '../models/userModel'
 import jwt from 'jsonwebtoken'
+import type { Request, Response, NextFunction } from 'express'
 import { promisify } from 'util'
-import AppError from '../utils/appError'
-import Email from '../utils/email'
 import crypto from 'crypto'
+import { catchAsync } from '@/shared/utils/catchAsync'
+import Email from '@/shared/utils/email'
+import AppError from '@/shared/utils/appError'
+import { IUser } from '@modules/user/user.types'
+import User from '@modules/user/user.model'
 
 const signToken = (id: string) => {
   return jwt.sign({ id }, process.env.JWT_SECRET as string, {

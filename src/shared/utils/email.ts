@@ -1,5 +1,5 @@
 import nodemailer, { type TransportOptions } from 'nodemailer'
-import type { IUser } from '../models/userModel'
+import type { IUser } from '@modules/user/user.types'
 import { convert } from 'html-to-text'
 import pug from 'pug'
 

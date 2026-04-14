@@ -1,38 +1,6 @@
-import mongoose, { Query, Document, Aggregate } from 'mongoose'
+import mongoose from 'mongoose'
 import slugify from 'slugify'
-
-interface ILocation {
-  type: 'Point'
-  coordinates: number[]
-  address: string
-  description: string
-}
-
-interface ITourLocation extends ILocation {
-  day: number
-}
-
-export interface ITour extends Document {
-  name: string
-  slug: string
-  duration: number
-  maxGroupSize: number
-  difficulty: 'easy' | 'medium' | 'difficult'
-  ratingsAverage: number
-  ratingsQuantity: number
-  price: number
-  priceDiscount?: number
-  summary: string
-  description?: string
-  imageCover: string
-  images: string[]
-  createdAt: Date
-  startDates: Date[]
-  secretTour: boolean
-  startLocation: ILocation
-  locations: ITourLocation[]
-  guides: String
-}
+import { ITour } from './tour.types'
 
 const tourSchema = new mongoose.Schema<ITour>(
   {
