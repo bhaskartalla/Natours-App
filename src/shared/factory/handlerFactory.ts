@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from 'express'
-import { catchAsync } from '../utils/catchAsync'
-import AppError from '../utils/appError'
 import { Model, Document, type PopulateOptions } from 'mongoose'
-import APIFeatures from '../utils/apiFeatures'
+import { catchAsync } from '@shared/utils/catchAsync'
+import AppError from '@shared/utils/appError'
+import APIFeatures from '@shared/utils/apiFeatures'
 
 export const createOne = <T extends Document>(Model: Model<T>) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {

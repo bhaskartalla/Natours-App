@@ -1,12 +1,13 @@
 import type { Request, Response, NextFunction } from 'express'
-import Review, { type IReview } from '../models/reviewModel'
+import Review from '@modules/review/review.model'
 import {
   createOne,
   deleteOne,
   getAll,
   getOne,
   updateOne,
-} from './handlerFactory'
+} from '@shared/factory/handlerFactory'
+import { IReview } from '@modules/review/review.types'
 
 export const setTourUserIds = (
   req: Request,

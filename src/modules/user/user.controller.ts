@@ -1,10 +1,16 @@
 import multer, { type FileFilterCallback } from 'multer'
 import sharp from 'sharp'
 import type { NextFunction, Request, Response } from 'express'
-import { catchAsync } from '../utils/catchAsync'
-import User, { type IUser } from '../models/userModel'
-import AppError from '../utils/appError'
-import { deleteOne, getAll, getOne, updateOne } from './handlerFactory'
+import { catchAsync } from '@shared/utils/catchAsync'
+import User from '@modules/user/user.model'
+import { IUser } from '@modules/user/user.types'
+import AppError from '@shared/utils/appError'
+import {
+  deleteOne,
+  getAll,
+  getOne,
+  updateOne,
+} from '@shared/factory/handlerFactory'
 
 const multerStorage = multer.memoryStorage()
 

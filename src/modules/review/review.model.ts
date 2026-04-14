@@ -1,13 +1,6 @@
-import mongoose, { Document, Model } from 'mongoose'
-import Tour from '../models/tourModel'
-
-export interface IReview extends Document {
-  review: string
-  rating: number
-  createdAt: Date
-  tour: mongoose.Types.ObjectId
-  user: mongoose.Types.ObjectId
-}
+import mongoose, { Model } from 'mongoose'
+import Tour from '@modules/tour/tour.model'
+import { IReview } from './review.types'
 
 interface IReviewModel extends Model<IReview> {
   calcAverageRatings(tourId: mongoose.Types.ObjectId): Promise<void>

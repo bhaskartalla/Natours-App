@@ -1,16 +1,17 @@
 import multer, { type FileFilterCallback } from 'multer'
 import sharp from 'sharp'
 import type { Request, Response, NextFunction } from 'express'
-import Tour, { type ITour } from '../models/tourModel'
-import { catchAsync } from '../utils/catchAsync'
-import AppError from '../utils/appError'
+import Tour from '@modules/tour/tour.model'
+import { ITour } from '@modules/tour/tour.types'
+import { catchAsync } from '@shared/utils/catchAsync'
+import AppError from '@shared/utils/appError'
 import {
   createOne,
   deleteOne,
   getAll,
   getOne,
   updateOne,
-} from './handlerFactory'
+} from '@shared/factory/handlerFactory'
 
 const multerStorage = multer.memoryStorage()
 
